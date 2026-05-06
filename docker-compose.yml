@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: review-automation-db
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: review-automation
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - review-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: review-automation-backend
+    ports:
+      - "5000:5000"
+    environment:
+      MONGODB_URI: mongodb://mongodb:27017/review-automation
+      NODE_ENV: development
+      PORT: 5000
+    depends_on:
+      - mongodb
+    networks:
+      - review-network
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: review-automation-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_API_URL: http://localhost:5000/api
+    depends_on:
+      - backend
+    networks:
+      - review-network
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+volumes:
+  mongodb_data:
+
+networks:
+  review-network:
+    driver: bridge
