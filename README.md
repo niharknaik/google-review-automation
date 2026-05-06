@@ -366,4 +366,4 @@ For issues or questions:
 
 ---
 
-**Built with ❤️ for businesses that want to grow with reviews!**
+**Built with ❤️ for businesses that want to grow with reviews! By CopG Global**
